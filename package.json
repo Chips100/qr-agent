@@ -1,0 +1,33 @@
+{
+  "name": "qr-agent",
+  "version": "0.1.0",
+  "description": "QR Agent creates QR codes for user-defined urls and keeps track of their usage afterwards.",
+  "main": "./dist/main.js",
+  "scripts": {
+    "drop-dist": "rimraf ./dist",
+    "build": "npm run drop-dist & tsc",
+    "start": "npm run build & node ./dist/main.js",
+    "test": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Chips100/qr-agent.git"
+  },
+  "keywords": [
+    "QR",
+    "node"
+  ],
+  "author": "Dennis Janiak",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Chips100/qr-agent/issues"
+  },
+  "homepage": "https://github.com/Chips100/qr-agent#readme",
+  "devDependencies": {
+    "@types/jest": "^24.0.13",
+    "jest": "^24.8.0",
+    "rimraf": "^2.6.3",
+    "ts-jest": "^24.0.2",
+    "typescript": "^3.5.1"
+  }
+}
