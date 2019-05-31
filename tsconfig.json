@@ -10,7 +10,7 @@
         "target": "es6"
     },
     "include": [
-        "main.ts",
+        "index.ts",
         "src/**/*.ts"
     ],
     "exclude": [

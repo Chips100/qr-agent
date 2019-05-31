@@ -1,0 +1,5 @@
+{
+  "publicDomain": "http://localhost",
+  "visitPrefix": "v/",
+  "fallbackPort": 1337
+}
