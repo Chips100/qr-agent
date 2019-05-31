@@ -1,13 +1,14 @@
-import { QRCodeGenerator } from "./src/qrcode-generation/qrcode-generator";
-
 import express = require('express');
+
+import { QRCodeGenerator } from "./src/qrcode-generation/qrcode-generator";
 import { RedirectionService } from "./src/redirection/redirection-service";
+import { getDemoEventStore } from "./demo-events";
 
 const publicDomain = 'http://localhost/';
 const visitPrefix = 'v/'
 const port = 80;
 
-
+const eventStore = getDemoEventStore();
 const app = express();
 
 // Generate QR-codes.
@@ -20,9 +21,9 @@ app.get('/qrcode/:id', async (req, res) => {
 });
 
 // Visit QR-codes.
-app.get(`/${visitPrefix}:id`, (req, res) => {
-    const redirectionService = new RedirectionService();
-    const redirectionTarget = redirectionService.getRedirectionById(req.params.id);
+app.get(`/${visitPrefix}:id`, async (req, res) => {
+    const redirectionService = new RedirectionService(eventStore);
+    const redirectionTarget = await redirectionService.getRedirectionById(+req.params.id);
 
     res.writeHead(302, { Location: redirectionTarget });
     res.end();
