@@ -25,7 +25,10 @@ app.get('/qrcode/:id', async (req, res) => {
 // Visit QR-codes.
 app.get(`/${configuration.visitPrefix}:id`, async (req, res) => {
     const redirectionService = new RedirectionService(eventStore);
-    const redirectionTarget = await redirectionService.getRedirectionById(+req.params.id);
+    const redirectionTarget = await redirectionService.followRedirection(+req.params.id, {
+        from: req.connection.remoteAddress,
+        userAgent: req.headers["user-agent"]
+    });
 
     res.writeHead(302, { Location: redirectionTarget });
     res.end();

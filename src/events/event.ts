@@ -18,7 +18,7 @@ export abstract class Event {
     /**
      * Timestamp of the event.
      */
-    public timestamp: Date;
+    public timestamp: Date = new Date();
 }
 
 /**

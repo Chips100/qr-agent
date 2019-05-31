@@ -24,4 +24,13 @@ export class EventStore {
 
         return <T>(await this.storage.readEvents(filter, 1))[0];
     }
+
+    /**
+     * Stores the specified event.
+     * @param event Event that should be stored.
+     */
+    public storeEvent(event: Event): Promise<void> {
+        // Just forward to the persistent storage.
+        return this.storage.storeEvent(event);
+    }
 }
