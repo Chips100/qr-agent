@@ -1,21 +1,15 @@
 import { Event } from './src/events/event';
 import { RedirectionConfiguredEvent } from "./src/redirection/redirection-configured.event";
-import { MemoryStorageAdapter } from "./src/events/adapters/memory-adapter";
 import { EventStore } from "./src/events/event-store";
 
 /**
- * Creates an EventStore that is initially filled with some demo events.
+ * Puts demo events into the specified EventStore.
  */
-export function getDemoEventStore(): EventStore {
-    const storageAdapter = new MemoryStorageAdapter();
-    const eventStore = new EventStore(storageAdapter);
-
+export async function fillEventStoreWithDemoEvents(eventStore: EventStore): Promise<void> {
     // Add each demo event individually.
     for (let event of getDemoEvents()) {
-        storageAdapter.storeEvent(event);
+        await eventStore.storeEvent(event);
     }
-
-    return eventStore;
 }
 
 function getDemoEvents(): Event[] {

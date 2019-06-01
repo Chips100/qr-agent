@@ -22,7 +22,7 @@ export class EventStore {
         const filterCopy = Object.assign({}, filter);
         filterCopy.type = eventType;
 
-        return <T>(await this.storage.readEvents(filter, 1))[0];
+        return <T>(await this.storage.readEvents(filterCopy, 1))[0];
     }
 
     /**

@@ -26,6 +26,7 @@ export class RedirectionService {
         
         // Create and store event for visit; fire-and-forget.
         const visitedEvent = new RedirectionVisitedEvent();
+        visitedEvent.id = id;
         visitedEvent.from = visitor.from;
         visitedEvent.userAgent = visitor.userAgent;
         this.eventStore.storeEvent(visitedEvent);
