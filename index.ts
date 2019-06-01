@@ -26,6 +26,9 @@ function setupApp(configuration: Configuration, eventStore: EventStore) {
             configuration.visitPrefix + 
             req.params.id);
     
+        const redirectionService = new RedirectionService(eventStore);
+        await redirectionService.configureRedirection(+req.params.id, "https://dennis-janiak.de");
+
         res.setHeader('Content-type', 'image/svg+xml');
         res.send(svg);
     });
