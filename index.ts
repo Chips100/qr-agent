@@ -32,14 +32,20 @@ function setupApp(configuration: Configuration, eventStore: EventStore) {
     
     // Visit QR-codes.
     app.get(`/${configuration.visitPrefix}:id`, async (req, res) => {
-        const redirectionService = new RedirectionService(eventStore);
-        const redirectionTarget = await redirectionService.followRedirection(+req.params.id, {
-            from: req.connection.remoteAddress,
-            userAgent: req.headers["user-agent"]
-        });
-
-        res.writeHead(302, { Location: redirectionTarget });
-        res.end();
+        try {
+            const redirectionService = new RedirectionService(eventStore);
+            const redirectionTarget = await redirectionService.followRedirection(+req.params.id, {
+                from: <string>req.headers["x-forwarded-for"] || req.connection.remoteAddress,
+                userAgent: req.headers["user-agent"]
+            });
+    
+            res.writeHead(302, { Location: redirectionTarget });
+            res.end();
+        }
+        catch(error) {
+            res.statusCode = 500;
+            res.send(error.toString());
+        }
     });
     
     
