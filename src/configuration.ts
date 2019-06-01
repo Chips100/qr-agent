@@ -23,6 +23,31 @@ export class Configuration {
     public readonly fallbackPort: number;
 
     /**
+     * Configuration of the EventStore.
+     */
+    public readonly eventStore: {
+        /**
+         * If set to true, the event store will be filled with some initial demo events.
+         */
+        readonly fillWithDemoEvents: boolean;
+
+        /**
+         * If configured, MongoDB will be used for persistent storage of events.
+         */
+        readonly mongo: {
+            /**
+             * URL used to connect to the mongo instance.
+             */
+            readonly url: string;
+        };
+
+        /**
+         * If configured, an in-memory adapter will be used for storage of events (non-persistent).
+         */
+        readonly memory: boolean;
+    }
+
+    /**
      * Reads the configuration from the specified file.
      * @param configFile File to read the configuration from.
      */

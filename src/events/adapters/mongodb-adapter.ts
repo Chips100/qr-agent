@@ -35,12 +35,15 @@ export class MongoDBStorageAdapter implements StorageAdapter {
      */
     public async readEvents(filter: EventFilter, limit: number): Promise<Event[]> {
         const collection = await this.getEventCollection();
-        return await collection.find(filter).sort('timestamp', -1).limit(limit).toArray();
+        return await collection.find(filter).sort({ timestamp: -1 }).limit(limit).toArray();
     }
 
     private async getEventCollection(): Promise<mongo.Collection> {
+        // Set up connection for first-time usage.
         if (this._cachedClient == null) {
-            this._cachedClient = await mongo.MongoClient.connect(this.connectionString);
+            this._cachedClient = await mongo.MongoClient.connect(this.connectionString, {
+                useNewUrlParser: true
+            });
         }
         
         return this._cachedClient.db('qragent').collection('events');

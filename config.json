@@ -1,5 +1,13 @@
 {
   "publicDomain": "http://localhost",
   "visitPrefix": "v/",
-  "fallbackPort": 1337
+  "fallbackPort": 1337,
+
+  "eventStore": {
+    "fillWithDemoEvents": true,
+    "memory": false,
+    "mongo": {
+      "url": "mongodb://localhost:27017"
+    }
+  }
 }

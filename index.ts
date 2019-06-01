@@ -6,12 +6,16 @@ import { fillEventStoreWithDemoEvents } from "./demo-events";
 import { Configuration } from "./src/configuration";
 import { EventStore } from './src/events/event-store';
 import { MongoDBStorageAdapter } from './src/events/adapters/mongodb-adapter';
+import { MemoryStorageAdapter } from './src/events/adapters/memory-adapter';
 
 const configuration = Configuration.read("./config.json");
 const port = process.env.PORT || configuration.fallbackPort;
-const eventStore = new EventStore(new MongoDBStorageAdapter("mongodb://localhost:27017"));
 
-fillEventStoreWithDemoEvents(eventStore).then(() => {
+getEventStoreByConfiguration(configuration).then(eventStore => {
+    setupApp(configuration, eventStore);
+});
+
+function setupApp(configuration: Configuration, eventStore: EventStore) {
     const app = express();
     
     // Generate QR-codes.
@@ -33,7 +37,7 @@ fillEventStoreWithDemoEvents(eventStore).then(() => {
             from: req.connection.remoteAddress,
             userAgent: req.headers["user-agent"]
         });
-    
+
         res.writeHead(302, { Location: redirectionTarget });
         res.end();
     });
@@ -42,4 +46,26 @@ fillEventStoreWithDemoEvents(eventStore).then(() => {
     app.listen(port, () => {
         console.log(`Listening on port ${port}!`);
     });
-});
+}
+
+async function getEventStoreByConfiguration(configuration: Configuration): Promise<EventStore> {
+    const eventStoreConfig = configuration.eventStore;
+    const providedConfigCount = [eventStoreConfig.memory, eventStoreConfig.mongo].filter(x => !!x).length;
+    let eventStore: EventStore = null;
+
+    if (providedConfigCount !== 1) {
+        throw new Error('Invalid configuration: You need to provide exactly one storage adapter for the event store.');
+    }
+
+    if (eventStoreConfig.memory) {
+        eventStore = new EventStore(new MemoryStorageAdapter());
+    } else if (eventStoreConfig.mongo) {
+        eventStore = new EventStore(new MongoDBStorageAdapter(eventStoreConfig.mongo.url));
+    }
+
+    if (eventStoreConfig.fillWithDemoEvents) {
+        fillEventStoreWithDemoEvents(eventStore);
+    }
+    
+    return eventStore;
+}
