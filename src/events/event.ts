@@ -6,8 +6,7 @@ export abstract class Event {
      * Creates an event.
      */
     public constructor() {
-        // Apply type name by looking up the decorator.
-        this.type = getEventDecorator((<any>this).__proto__.constructor).type;
+        this.type = this.getEventTypeName();
     }
     
     /**
@@ -19,6 +18,14 @@ export abstract class Event {
      * Timestamp of the event.
      */
     public timestamp: Date = new Date();
+
+    /**
+     * Can be overridden to specify how the event's type name should be retreived.
+     * Default implementation looks for the event-decorator.
+     */
+    protected getEventTypeName(): string {
+        return getEventDecorator((<any>this).__proto__.constructor).type;
+    }
 }
 
 /**

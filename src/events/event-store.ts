@@ -18,6 +18,7 @@ export class EventStore {
      * @param filter Filter that should be matched by the returned event.
      */
     public async getLatestOfType<T extends Event>(type: {new(): T}, filter: EventFilter): Promise<T> {
+        // Use default constructor for automatic retreival of the event's type name.
         const eventType = (new type()).type;
         const filterCopy = Object.assign({}, filter);
         filterCopy.type = eventType;

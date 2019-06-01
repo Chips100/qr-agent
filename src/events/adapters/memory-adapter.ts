@@ -29,6 +29,14 @@ export class MemoryStorageAdapter implements StorageAdapter {
     }
 
     /**
+     * Retreives all events stored in memory.
+     * Main purpose for inspecting contents in unit tests.
+     */
+    public getAllEvents(): Event[] {
+        return this._events.slice(0);
+    }
+
+    /**
      * Determines if the specified event matches the filter.
      */
     private matches(event: Event, filter: EventFilter) {
