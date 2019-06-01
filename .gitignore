@@ -1,6 +1,9 @@
 # compiled result
 dist/
 
+# productive configuration
+config.*.json
+
 # Logs
 logs
 *.log
