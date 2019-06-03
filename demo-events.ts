@@ -14,10 +14,10 @@ export async function fillEventStoreWithDemoEvents(eventStore: EventStore): Prom
 
 function getDemoEvents(): Event[] {
     return [
-        createEvent(RedirectionConfiguredEvent, new Date(2019, 4, 30), { id: 1, targetUrl: 'https://www.google.com/' }),
-        createEvent(RedirectionConfiguredEvent, new Date(2019, 4, 30), { id: 2, targetUrl: 'https://www.facebook.com/' }),
-        createEvent(RedirectionConfiguredEvent, new Date(2019, 4, 30), { id: 3, targetUrl: 'https://www.amazon.com/' }),
-        createEvent(RedirectionConfiguredEvent, new Date(2019, 4, 29), { id: 1, targetUrl: 'https://www.netflix.com/' })
+        createEvent(RedirectionConfiguredEvent, new Date(2019, 4, 30), { id: "1", targetUrl: 'https://www.google.com/' }),
+        createEvent(RedirectionConfiguredEvent, new Date(2019, 4, 30), { id: "2", targetUrl: 'https://www.facebook.com/' }),
+        createEvent(RedirectionConfiguredEvent, new Date(2019, 4, 30), { id: "3", targetUrl: 'https://www.amazon.com/' }),
+        createEvent(RedirectionConfiguredEvent, new Date(2019, 4, 29), { id: "1", targetUrl: 'https://www.netflix.com/' })
     ];
 }
 

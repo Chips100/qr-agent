@@ -8,7 +8,7 @@ export class RedirectionVisitedEvent extends Event {
     /**
      * ID of the QR code that has been visited.
      */
-    id: number;
+    id: string;
 
     /**
      * Address of the visitor (i.e. the IP address).

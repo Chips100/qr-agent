@@ -17,7 +17,7 @@ export class RedirectionService {
      * @param id ID of the QR code that should be redirected.
      * @param targetUrl URL that visitors of the QR code should be redirected to.
      */
-    public async configureRedirection(id: number, targetUrl: string): Promise<void> {
+    public async configureRedirection(id: string, targetUrl: string): Promise<void> {
         // TODO with account management:
         // Check ownership of id (or ensure it has not been used before).
         const event = new RedirectionConfiguredEvent();
@@ -32,7 +32,7 @@ export class RedirectionService {
      * @param visitor Information about the visitor of the QR code.
      * @returns The target url that the visitor should be redirected to.
      */
-    public async followRedirection(id: number, visitor: { from: string, userAgent: string }): Promise<string> {
+    public async followRedirection(id: string, visitor: { from: string, userAgent: string }): Promise<string> {
         // Target Determined by the last configuration event.
         const configuredEvent = await this.eventStore.getLatestOfType(RedirectionConfiguredEvent, {
             id: id

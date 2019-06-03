@@ -27,7 +27,7 @@ function setupApp(configuration: Configuration, eventStore: EventStore) {
             req.params.id);
     
         const redirectionService = new RedirectionService(eventStore);
-        await redirectionService.configureRedirection(+req.params.id, "https://dennis-janiak.de");
+        await redirectionService.configureRedirection(req.params.id, "https://dennis-janiak.de");
 
         res.setHeader('Content-type', 'image/svg+xml');
         res.send(svg);
@@ -37,7 +37,7 @@ function setupApp(configuration: Configuration, eventStore: EventStore) {
     app.get(`/${configuration.visitPrefix}:id`, async (req, res) => {
         try {
             const redirectionService = new RedirectionService(eventStore);
-            const redirectionTarget = await redirectionService.followRedirection(+req.params.id, {
+            const redirectionTarget = await redirectionService.followRedirection(req.params.id, {
                 from: <string>req.headers["x-forwarded-for"] || req.connection.remoteAddress,
                 userAgent: req.headers["user-agent"]
             });
