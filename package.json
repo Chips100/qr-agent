@@ -10,7 +10,8 @@
     "publish-azure-prod": "npm run publish-azure && XCOPY config.prod.json dist\\config.json* /Y && npm run zip-dist",
     "publish-azure": "npm run build && XCOPY \"azure-assets\" \"dist\\\" /E && npm run install-dist",
     "drop-dist": "rimraf ./dist",
-    "build": "npm run drop-dist && tsc",
+    "build": "npm run drop-dist && tsc && npm run copy-public",
+    "copy-public": "XCOPY \"public\" \"dist\\public\\\" /E",
     "install-dist": "XCOPY package.json dist\\ /Y && cd dist && npm install --production",
     "zip-dist": "cd dist && bestzip publish.zip *"
   },

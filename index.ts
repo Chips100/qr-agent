@@ -17,6 +17,9 @@ getEventStoreByConfiguration(configuration).then(eventStore => {
 
 function setupApp(configuration: Configuration, eventStore: EventStore) {
     const app = express();
+
+    // Public static files.
+    app.use(express.static(__dirname + '/public'));
     
     // Generate QR-codes.
     app.get('/qrcode/:id', async (req, res) => {
