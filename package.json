@@ -11,7 +11,7 @@
     "publish-azure": "npm run build && XCOPY \"azure-assets\" \"dist\\\" /E && npm run install-dist",
     "drop-dist": "rimraf ./dist",
     "build": "npm run drop-dist && tsc && npm run copy-public",
-    "copy-public": "XCOPY \"./public\" \"./dist/public\" /E /I",
+    "copy-public": "cpx \"public/**/*.*\" \"dist/public\"",
     "install-dist": "XCOPY package.json dist\\ /Y && cd dist && npm install --production",
     "zip-dist": "cd dist && bestzip publish.zip *"
   },
@@ -35,6 +35,7 @@
     "@types/mongodb": "^3.1.27",
     "@types/qrcode": "^1.3.3",
     "bestzip": "^2.1.4",
+    "cpx": "^1.5.0",
     "jest": "^24.8.0",
     "rimraf": "^2.6.3",
     "ts-jest": "^24.0.2",
