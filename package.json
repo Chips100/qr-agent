@@ -11,7 +11,7 @@
     "publish-azure": "npm run build && XCOPY \"azure-assets\" \"dist\\\" /E && npm run install-dist",
     "drop-dist": "rimraf ./dist",
     "build": "npm run drop-dist && tsc && npm run copy-public",
-    "copy-public": "XCOPY \"public\" \"dist/public\" /E /I",
+    "copy-public": "XCOPY \"./public\" \"./dist/public\" /E /I",
     "install-dist": "XCOPY package.json dist\\ /Y && cd dist && npm install --production",
     "zip-dist": "cd dist && bestzip publish.zip *"
   },
