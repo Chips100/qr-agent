@@ -8,7 +8,7 @@ import { RedirectionVisitedEvent } from "./redirection-visited.event";
 export class RedirectionService {
     /**
      * Creates a RedirectionService.
-     * @param eventStore 
+     * @param eventStore EventStore used to access and create events.
      */
     public constructor(private readonly eventStore: EventStore) { }
 

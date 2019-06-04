@@ -9,5 +9,19 @@
     "mongo": {
       "url": "mongodb://localhost:27017"
     }
+  },
+
+  "session": {
+    "secret": "development-secret",
+    "store": {
+      "memory": false,
+      "mongo": {
+        "url": "mongodb://localhost:27017"
+      }
+    }
+  },
+
+  "google": {
+    "authClientId": "TODO"
   }
 }

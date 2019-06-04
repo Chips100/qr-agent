@@ -7,6 +7,10 @@ import { Configuration } from "./src/configuration";
 import { EventStore } from './src/events/event-store';
 import { MongoDBStorageAdapter } from './src/events/adapters/mongodb-adapter';
 import { MemoryStorageAdapter } from './src/events/adapters/memory-adapter';
+import { AccountService } from './src/accounts/account-service';
+import { AccountType } from './src/accounts/account-type';
+import { AppAuthProvider } from './src/accounts/auth-providers/app-auth-provider';
+import { GoogleAuthProvider } from './src/accounts/auth-providers/google-auth-provider';
 
 const configuration = Configuration.read("./config.json");
 const port = process.env.PORT || configuration.fallbackPort;
@@ -53,7 +57,15 @@ function setupApp(configuration: Configuration, eventStore: EventStore) {
             res.send(error.toString());
         }
     });
-    
+
+    app.post('/signin/:type', async (req, res) => {
+        const accountService = new AccountService(eventStore, {
+            [AccountType.App]: new AppAuthProvider(),
+            [AccountType.Google]: new GoogleAuthProvider(configuration.google.authClientId)
+        });
+        
+        const result = await accountService.signIn(req.params.type, req.body);
+    });
     
     app.listen(port, () => {
         console.log(`Listening on port ${port}!`);

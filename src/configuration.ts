@@ -48,6 +48,46 @@ export class Configuration {
     }
 
     /**
+     * Configuration of express session management.
+     */
+    public readonly session: {
+        /**
+         * Secret used for signing.
+         */
+        readonly secret: string,
+
+        /**
+         * Store used for holding the active sessions.
+         */
+        readonly store: {
+            /**
+             * If configured, an in-memory store will be used (development-purpose).
+             */
+            readonly memory: boolean;
+
+            /**
+             * If configured, sessions will be stored in a mongo instance.
+             */
+            readonly mongo: {
+                /**
+                 * URL used to connect to the mongo instance.
+                 */
+                readonly url: string;
+            }
+        }
+    };
+
+    /**
+     * Configuration for Google services.
+     */
+    public readonly google: {
+        /**
+         * Client ID registered for signing in with Google accounts.
+         */
+        readonly authClientId: string;
+    }
+
+    /**
      * Reads the configuration from the specified file.
      * @param configFile File to read the configuration from.
      */
