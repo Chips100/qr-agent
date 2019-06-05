@@ -54,7 +54,12 @@ export class Configuration {
         /**
          * Secret used for signing.
          */
-        readonly secret: string,
+        readonly secret: string,       
+        
+        /**
+         * If configured, sessions will only work on https connections.
+         */
+        readonly requireHttps: boolean;
 
         /**
          * Store used for holding the active sessions.

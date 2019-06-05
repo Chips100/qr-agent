@@ -22,6 +22,6 @@
   },
 
   "google": {
-    "authClientId": "TODO"
+    "authClientId": "CLIENT_ID"
   }
 }

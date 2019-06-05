@@ -10,4 +10,9 @@ export class AccountCreatedEvent extends Event {
    * type to prevent id conflicts; e.g. "google:id".
    */
   id: string;
+
+  /**
+   * Additional information retrieved from external auth providers (e.g. login with Google).
+   */
+  authProviderInformation?: any;
 }

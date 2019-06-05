@@ -5,27 +5,28 @@ import { MemoryStorageAdapter } from "../events/adapters/memory-adapter";
 import { EventStore } from "../events/event-store";
 import { AccountType } from "./account-type";
 import { AccountCreatedEvent } from "./account-created.event";
+import { TransientSessionProvider } from "../sessions/transient-session-provider";
 
 describe('AccountService', () => {
     it('should use the auth provider registered for the account type.', async () => {
         // Include payload in accountId to check correct call of auth provider.
         const appAuthProviderMock = new AuthProviderMock(payload => ({ verified: true, accountId: "123-" + payload }));
-        const googleAuthProviderMock = new AuthProviderMock(payload => ({ verified: false, accountId: null }));
+        const googleAuthProviderMock = new AuthProviderMock(() => ({ verified: false, accountId: "irrelevant" }));
 
-        const sut = new AccountService(new EventStore(new MemoryStorageAdapter()), {
+        const sessionProvider = new TransientSessionProvider();
+        const sut = new AccountService(sessionProvider, new EventStore(new MemoryStorageAdapter()), {
             [AccountType.App]: appAuthProviderMock,
             [AccountType.Google]: googleAuthProviderMock
         });
 
         // First sign in with type App.
-        const result = await sut.signIn(AccountType.App, "x");
-        expect(result.verified).toBeTruthy();
-        expect(result.accountId).toEqual("app:123-x");
+        await sut.signIn(AccountType.App, "x");
+        expect(sessionProvider.getCurrentAccountId()).toEqual("app:123-x");
         
         // Second sign in with type Google.
-        const result2 = await sut.signIn(AccountType.Google, "x");
-        expect(result2.verified).toBeFalsy();
-        expect(result2.accountId).toBeNull();
+        sessionProvider.reset();
+        await sut.signIn(AccountType.Google, "x");
+        expect(sessionProvider.getCurrentAccountId()).toBeFalsy();
     });
 
     it('should not create an AccountCreatedEvent if the account already exists.', async () => {
@@ -35,9 +36,13 @@ describe('AccountService', () => {
         event.id = "app:123-x";
         memoryAdapter.storeEvent(event);
 
-        const sut = new AccountService(new EventStore(memoryAdapter), {
-            [AccountType.App]: new AuthProviderMock(payload => ({ verified: true, accountId: "123-" + payload })),
-            [AccountType.Google]: null
+        const sut = new AccountService(new TransientSessionProvider(),new EventStore(memoryAdapter), {
+            [AccountType.Google]: null,
+            [AccountType.App]: new AuthProviderMock(payload => ({ 
+                verified: true, 
+                accountId: "123-" + payload, 
+                authProviderInformation: { info: "info" } 
+            }))
         });
 
         await sut.signIn(AccountType.App, "x");
@@ -54,18 +59,24 @@ describe('AccountService', () => {
         event.timestamp = new Date(2019, 0, 1);
         memoryAdapter.storeEvent(event);
 
-        const sut = new AccountService(new EventStore(memoryAdapter), {
-            [AccountType.App]: new AuthProviderMock(payload => ({ verified: true, accountId: "123-" + payload })),
-            [AccountType.Google]: null
+        const sut = new AccountService(new TransientSessionProvider(),new EventStore(memoryAdapter), {
+            [AccountType.Google]: null,
+            [AccountType.App]: new AuthProviderMock(payload => ({ 
+                verified: true, 
+                accountId: "123-" + payload, 
+                authProviderInformation: { info: "info" } 
+            }))
         });
 
         await sut.signIn(AccountType.App, "x");
 
         // Expect the new event (first item, as the events should be chronologically descending).
         expect(memoryAdapter.getAllEvents().length).toEqual(2);
-        const newEvent = memoryAdapter.getAllEvents()[0];
+        const newEvent = <AccountCreatedEvent>memoryAdapter.getAllEvents()[0];
         expect(newEvent instanceof AccountCreatedEvent).toBeTruthy();
-        expect((<AccountCreatedEvent>newEvent).id).toEqual("app:123-x");
+        expect(newEvent.id).toEqual("app:123-x");
+        expect(newEvent.authProviderInformation).toBeTruthy();
+        expect(newEvent.authProviderInformation.info).toEqual("info");
     });
 });
 

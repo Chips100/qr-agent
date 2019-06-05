@@ -26,8 +26,14 @@ export class GoogleAuthProvider implements AuthProvider {
         idToken: payload.token,
         audience: this.googleClientId
       });
-
-      return { verified: true, accountId: ticket.getPayload().sub };
+      
+      const ticketPayload = ticket.getPayload();
+      
+      return {
+        verified: true, 
+        accountId: ticketPayload.sub, 
+        authProviderInformation: ticketPayload 
+      };
     }
     catch(error) {
       // TODO: Logging
