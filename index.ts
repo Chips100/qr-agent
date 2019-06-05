@@ -53,9 +53,6 @@ function setupApp(configuration: Configuration, eventStore: EventStore) {
             configuration.visitPrefix +
             req.params.id);
 
-        const redirectionService = new RedirectionService(eventStore);
-        await redirectionService.configureRedirection(req.params.id, "https://dennis-janiak.de");
-
         res.setHeader('Content-type', 'image/svg+xml');
         res.send(svg);
     });
@@ -63,7 +60,9 @@ function setupApp(configuration: Configuration, eventStore: EventStore) {
     // Visit QR-codes.
     app.get(`/${configuration.visitPrefix}:id`, async (req, res) => {
         try {
-            const redirectionService = new RedirectionService(eventStore);
+            const sessionProvider = new ExpressSessionProvider(req);
+            const redirectionService = new RedirectionService(sessionProvider, eventStore);
+            
             const redirectionTarget = await redirectionService.followRedirection(req.params.id, {
                 from: <string>req.headers["x-forwarded-for"] || req.connection.remoteAddress,
                 userAgent: req.headers["user-agent"]

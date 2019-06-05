@@ -11,6 +11,11 @@ export class RedirectionConfiguredEvent extends Event {
     id: string;
 
     /**
+     * ID of the account to which the QR code belongs (first used).
+     */
+    accountId: string;
+
+    /**
      * Target URL that should be redirected to when visiting the QR code.
      */
     targetUrl: string;

@@ -1,6 +1,7 @@
 import { EventStore } from "../events/event-store";
 import { RedirectionConfiguredEvent } from "./redirection-configured.event";
 import { RedirectionVisitedEvent } from "./redirection-visited.event";
+import { SessionProvider } from "../sessions/session-provider";
 
 /**
  * Allows configuration and lookup of redirections for QR codes.
@@ -8,9 +9,12 @@ import { RedirectionVisitedEvent } from "./redirection-visited.event";
 export class RedirectionService {
     /**
      * Creates a RedirectionService.
+     * @param sessionprovider Provider used to access data stored in the current user session.
      * @param eventStore EventStore used to access and create events.
      */
-    public constructor(private readonly eventStore: EventStore) { }
+    public constructor(
+        private readonly sessionProvider: SessionProvider,
+        private readonly eventStore: EventStore) { }
 
     /**
      * Configures the redirection for the specified QR code.
@@ -18,10 +22,20 @@ export class RedirectionService {
      * @param targetUrl URL that visitors of the QR code should be redirected to.
      */
     public async configureRedirection(id: string, targetUrl: string): Promise<void> {
-        // TODO with account management:
-        // Check ownership of id (or ensure it has not been used before).
+        const currentAccountId = this.sessionProvider.getCurrentAccountId();
+        const lastConfigurationEvent = await this.eventStore.getLatestOfType(RedirectionConfiguredEvent, {
+            id: id
+        });
+
+        // Check ownership of the QR code with the specified id.
+        if (lastConfigurationEvent && lastConfigurationEvent.accountId !== currentAccountId) {
+            throw new Error('QR code is already in use.');
+        }
+        
+        // (Re)configure the redirection by creating a new event.
         const event = new RedirectionConfiguredEvent();
         event.id = id;
+        event.accountId = currentAccountId;
         event.targetUrl = targetUrl;
         await this.eventStore.storeEvent(event);
     }
