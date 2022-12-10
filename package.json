@@ -46,7 +46,7 @@
   "dependencies": {
     "body-parser": "^1.19.0",
     "connect-mongo": "^2.0.3",
-    "express": "^4.17.1",
+    "express": "^4.17.3",
     "express-session": "^1.16.1",
     "google-auth-library": "^4.1.0",
     "mongodb": "^3.2.6",
